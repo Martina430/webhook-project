@@ -4,7 +4,10 @@ library(jsonlite)
 verify_token <- "Rogeno2001"  # Token segreto per la verifica
 
 #* @get /webhook
+#* @serializer unboxedJSON
 function(req, res) {
+  res$setHeader("Content-Type", "text/plain")
+  
   params <- req$args
   hub.mode <- params$hub.mode
   hub.verify_token <- params$hub.verify_token
@@ -13,7 +16,7 @@ function(req, res) {
   if (!is.null(hub.mode) && !is.null(hub.verify_token) && !is.null(hub.challenge)) {
     if (hub.mode == "subscribe" && hub.verify_token == verify_token) {
       res$status <- 200
-      return(hub.challenge)  # Restituisce il valore di verifica
+      return(as.character(hub.challenge))  # Meta richiede una risposta in testo normale!
     } else {
       res$status <- 403
       return(list(error = "Verifica fallita"))
