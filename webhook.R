@@ -4,10 +4,14 @@ library(jsonlite)
 verify_token <- "Rogeno2001"  # Token segreto per la verifica
 
 #* @get /webhook
-function(hub.mode, hub.verify_token, hub.challenge) {
-  if (!missing(hub.mode) && !missing(hub.verify_token) && !missing(hub.challenge)) {
+function(req) {
+  hub.mode <- req$parameters$hub.mode
+  hub.verify_token <- req$parameters$hub.verify_token
+  hub.challenge <- req$parameters$hub.challenge
+  
+  if (!is.null(hub.mode) && !is.null(hub.verify_token) && !is.null(hub.challenge)) {
     if (hub.mode == "subscribe" && hub.verify_token == verify_token) {
-      return(hub.challenge)  # Restituisce il valore per la verifica
+      return(hub.challenge)  # Restituisce il valore di verifica
     } else {
       return(list(error = "Verifica fallita"))
     }
