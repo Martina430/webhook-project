@@ -1,0 +1,17 @@
+# Usa un'immagine di R preconfigurata
+FROM rocker/r-ver:latest  
+
+# Installa le dipendenze
+RUN R -e "install.packages('plumber')"
+RUN R -e "install.packages('jsonlite')"
+
+# Copia i file del Webhook dentro il container
+COPY webhook.R /app/webhook.R
+COPY server.R /app/server.R
+WORKDIR /app
+
+# Espone la porta 8000
+EXPOSE 8000  
+
+# Comando di avvio del server
+CMD ["R", "-e", "source('server.R')"]
